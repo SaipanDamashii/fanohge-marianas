@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fanohge — The Marianas: From Latte Stones to Nationhood</title>
+<link rel="stylesheet" href="style.css?v=20250639">
+</head>
+<body>
+<!-- Boot cover: the title screen — the first thing painted, so the game UI
+     never shows first. Its background IS the real titlescreen.jpg (no fake
+     gradient/navy screen at all). Removed when the player starts. -->
+<div id="boot-cover">
+  <img id="boot-bg" src="assets/titlescreen.jpg" alt="">
+  <div class="title-content">
+    <div class="title-kicker">A Saga of Civilization in the Pacific</div>
+    <h1 class="title-game">Fanohge</h1>
+    <div class="title-sub">The Marianas · <em>From Latte Stones to Nationhood</em></div>
+    <div class="title-tagline">"The island gives everything. The people decide what to do with it."</div>
+    <div class="title-actions" data-title-actions></div>
+    <div class="title-hint">or press <b>Enter</b></div>
+  </div>
+</div>
+<div id="app">
+  <header id="topbar">
+    <div class="brand">
+      <div class="brand-title">Fanohge</div>
+      <div class="brand-sub">The Marianas Saga</div>
+    </div>
+    <div id="era-badge" class="era-badge"></div>
+    <div id="resources" class="resources"></div>
+    <div class="top-actions">
+      <select id="speed-sel" class="speed-sel" title="Time scale — how many years pass with each turn">
+        <option value="1">⏳ 1×</option>
+        <option value="2">⏩ 2×</option>
+        <option value="4">⏩⏩ 4×</option>
+        <option value="8">🚀 8×</option>
+      </select>
+      <button id="btn-audio" class="ghost" title="Toggle sound &amp; music">🔊</button>
+      <button id="btn-newgame" class="ghost" title="New Game">&#8635;</button>
+      <button id="btn-next" class="btn-next">Advance Time <span class="key">&#8629;</span></button>
+    </div>
+  </header>
+  <main id="main">
+    <section id="map-col">
+      <div id="map-title">The Marianas Archipelago</div>
+      <div id="map-svg"></div>
+      <div id="map-legend"></div>
+    </section>
+    <section id="content-col">
+      <nav id="tabs">
+        <button data-tab="overview" class="tab active">Islands &amp; Build</button>
+        <button data-tab="people" class="tab">People &amp; Governance</button>
+        <button data-tab="story" class="tab">Story &amp; Timeline</button>
+      </nav>
+      <div id="tab-overview" class="tabpage active">
+        <div id="island-list"></div>
+        <div id="island-panel"></div>
+      </div>
+      <div id="tab-people" class="tabpage"></div>
+      <div id="tab-story" class="tabpage"></div>
+    </section>
+  </main>
+  <footer id="logbar">
+    <div id="log-title">Chronicle <span class="log-count"></span></div>
+    <div id="log-list"></div>
+  </footer>
+</div>
+<div id="toast-root"></div>
+<div id="modal-root"></div>
+<script type="importmap">
+{ "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.161.0/examples/jsm/"
+} }
+</script>
+<script src="js/data.js?v=20250637"></script>
+<script src="js/engine.js?v=20250637"></script>
+<script type="module" src="js/gameboard.js?v=20250679"></script>
+<script src="js/audio.js?v=20250640"></script>
+<script src="js/ui.js?v=20250654"></script>
+</body>
+</html>
