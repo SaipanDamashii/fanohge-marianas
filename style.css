@@ -338,6 +338,28 @@ body{
   text-transform:uppercase;flex:0 0 auto;
 }
 .log-count{color:var(--dim);font-family:var(--sans);font-size:10px}
+#log-title{display:flex;align-items:center;gap:8px;flex:0 0 auto}
+.log-toggle{
+  margin-left:auto;flex:0 0 auto;cursor:pointer;pointer-events:auto;
+  background:rgba(255,255,255,.07);color:var(--gold);border:1px solid var(--line2);
+  border-radius:8px;width:30px;height:26px;font-size:14px;line-height:1;
+  padding:0;display:inline-flex;align-items:center;justify-content:center;
+}
+.log-toggle:hover{background:rgba(255,255,255,.14)}
+/* Always-available "Minimize" button. Hidden unless the Chronicle is expanded,
+   so it appears exactly when the player needs a way back out. Large + clear. */
+.log-min{
+  display:none;align-items:center;justify-content:center;gap:6px;
+  flex:0 0 auto;cursor:pointer;pointer-events:auto;
+  width:100%;padding:9px 0;margin-bottom:6px;border:none;border-radius:10px;
+  font-family:var(--sans);font-size:13px;font-weight:700;color:var(--gold2);
+  background:rgba(232,192,106,.12);border:1px solid rgba(232,192,106,.4);
+}
+.log-min:active{background:rgba(232,192,106,.22)}
+#logbar.expanded .log-min{display:flex}
+#logbar.dismissed #log-list{display:none}
+#logbar.dismissed .log-toggle{transform:rotate(180deg)}
+#logbar.dismissed .log-min{display:none}
 #log-list{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:3px;padding:4px 0}
 .log-line{font-size:11.5px;color:var(--dim);line-height:1.4;border-bottom:1px dashed rgba(140,190,225,.08);padding:2px 0}
 .log-line b{color:var(--gold2);font-weight:600}
@@ -540,3 +562,108 @@ body{
 .title-continue:hover{background:rgba(20,42,66,.7)}
 .title-hint{color:rgba(220,235,245,.7);font-size:12px;margin-top:22px;text-shadow:0 1px 6px rgba(0,0,0,.8)}
 .title-hint b{color:var(--gold2)}
+
+/* ================= MOBILE / PHONE OPTIMIZATION =================
+   Phones are portrait and narrow. The desktop layout puts the 3D board and the
+   content column SIDE BY SIDE with large min-widths that together exceed a phone
+   width, forcing the player to pan/scroll around. On narrow screens we STACK the
+   board above the content (each full-width, no horizontal overflow) and compact
+   the chrome so it fits the device viewport. */
+@media (max-width: 900px){
+  html,body{overflow-x:hidden;overscroll-behavior:none}
+  body{overflow:auto}
+  #app{height:100dvh;min-height:100dvh}
+  /* top bar: compress so it fits without wrapping off-screen */
+  #topbar{flex-wrap:wrap;gap:8px;padding:6px 10px}
+  .brand-title{font-size:18px;letter-spacing:1px}
+  .brand-sub{font-size:8px;letter-spacing:2px}
+  .era-badge{font-size:12px;padding:5px 10px}
+  .era-badge-art{width:20px;height:20px}
+  #speed-sel,.top-actions .ghost,.btn-next{font-size:12px}
+  .top-actions{gap:6px}
+  .btn-next{padding:7px 12px}
+  /* stack: 3D board on top, tabs+content below. The board keeps a generous
+     share so it is clearly visible in portrait (it shows fine there too).
+     IMPORTANT: the board3d host is position:absolute;inset:0, so #map-col MUST
+     have a resolved height (height, not just max-height) or the absolutely
+     positioned canvas collapses to 0 and the 3D board is invisible. */
+  #main{flex-direction:column}
+  #map-col{flex:0 0 auto !important;width:100% !important;min-width:0 !important;border-right:none;border-bottom:1px solid var(--line);max-height:46vh;padding:0}
+  #map-col.board3d{flex:0 0 auto !important;min-width:0 !important;height:46vh !important;max-height:46vh;border-bottom:1px solid var(--line);position:relative}
+  #map-col.board3d + #content-col{flex:1 1 auto !important;min-width:0 !important;min-height:0 !important;max-height:none !important}
+  #content-col{flex:1 1 auto;width:100%;min-width:0;min-height:0}
+  #board-host{position:absolute;inset:0}
+  /* Chronicle: collapsed to a thin toggle strip by default so the game screen
+     gets the space. Tap the toggle to expand it; it auto-expands on a hot
+     event and the player can re-minimize. */
+  #logbar{flex:0 0 30px !important;cursor:pointer}
+  #logbar.expanded{flex:0 0 36vh !important}
+  #logbar.dismissed #log-list{display:none}
+  #logbar .log-toggle{width:32px;height:28px}
+  /* smaller tab labels so all three fit */
+  .tab{font-size:12px;padding:7px 9px}
+  .tabpage.active{flex-direction:column}
+  #tab-overview .panel-card,#tab-overview #island-list{min-width:0}
+  /* touch-friendly taps in overview */
+  .isle-card,.build-card,.own-item,.policy-card{font-size:12.5px}
+  #topbar .brand{display:block}
+  .title-actions button{min-height:46px;font-size:15px}
+}
+@media (max-width: 480px){
+  .brand-sub{display:none}
+  #speed-sel{max-width:56px}
+  .tab{font-size:11px;padding:6px 6px}
+  .era-badge-art{display:none}
+}
+
+/* ================= LANDSCAPE / SHORT-VIEWPORT =================
+   A phone turned sideways is wide (~800-900px) but SHORT (~350-420px).
+   The portrait query above (max-width:900px) fires here too and forces
+   everything into a tall column, so the 118px Chronicle + topbar + stacked
+   board eat most of the tiny height and the game screen is left a sliver.
+   On landscape there IS width to spare, so we go back to board + content
+   SIDE BY SIDE (maximizing the game screen) and shrink the Chronicle down to
+   a thin, scrollable strip at the bottom instead of a tall panel. */
+@media (max-width: 900px) and (orientation: landscape){
+  html,body{overflow:hidden;height:100%;overscroll-behavior:none}
+  body #app{height:100vh;min-height:100vh;max-height:100vh;display:flex;flex-direction:column}
+  /* very compact top bar: single row, small */
+  #topbar{flex-wrap:nowrap;gap:6px;padding:4px 8px}
+  .brand-sub{display:none}
+  .brand-title{font-size:15px}
+  .era-badge{padding:4px 8px;font-size:11px}
+  .era-badge-art{display:none}
+  .resources{gap:5px;flex-wrap:nowrap;overflow-x:auto;justify-content:flex-start}
+  .res-chip{min-width:auto;padding:3px 7px;font-size:11px}
+  #speed-sel{max-width:46px;font-size:11px;padding:5px}
+  .top-actions{flex-wrap:nowrap;gap:5px}
+  .top-actions .ghost{width:30px;height:30px;font-size:14px}
+  .btn-next{font-size:12px;padding:5px 9px}
+  /* main: board + content side-by-side (there's width for it) */
+  #main{flex-direction:row;flex:1 1 auto;min-height:0}
+  #map-col{flex:0 0 58% !important;width:auto !important;min-width:0 !important;
+    max-height:none !important;border-right:1px solid var(--line);
+    border-bottom:none;padding:0;position:relative}
+  #map-col.board3d{flex:1 1 58% !important;min-width:0 !important;max-height:none !important;
+    border-right:1px solid var(--line);border-bottom:none;position:relative}
+  #map-col.board3d + #content-col{flex:0 0 42% !important;min-width:0 !important;max-height:none !important}
+  #content-col{flex:0 0 42% !important;width:auto !important;min-width:0 !important;min-height:0;max-height:none !important}
+  #board-host{position:absolute;inset:0}
+  /* compact tabs */
+  #tabs{padding:4px 8px 0}
+  .tab{font-size:11px;padding:6px 8px}
+  .tabpage.active{flex-direction:row;flex-wrap:wrap}
+  #island-list{flex:0 0 140px}
+  /* Chronicle: a thin scrollable strip that can also be minimized via the
+     toggle (dismissed → just the header row). Overrides the portrait block. */
+  #logbar{flex:0 0 58px !important;padding:3px 10px 4px !important}
+  #logbar.dismissed{flex:0 0 30px !important;padding:2px 10px !important}
+  #logbar.expanded{flex:0 0 40vh !important;padding:3px 10px 4px !important}
+  #log-title{font-size:9.5px}
+  #log-list{flex-direction:row;flex-wrap:wrap;gap:2px 12px;overflow-y:hidden;overflow-x:auto}
+  .log-line{font-size:10.5px;border-bottom:none;padding:1px 0;white-space:nowrap}
+  /* toast fits the short screen */
+  #toast-root{top:46px;right:8px;max-width:60vw}
+  .modal{max-height:94vh}
+  .title-begin,.title-continue{min-height:44px;font-size:14px}
+}

@@ -62,21 +62,20 @@
     </section>
   </main>
   <footer id="logbar">
-    <div id="log-title">Chronicle <span class="log-count"></span></div>
+    <button id="log-min" class="log-min" title="Minimize the Chronicle"><span class="log-min-ico">▾</span><span class="log-min-txt">Minimize</span></button>
+    <div id="log-title">Chronicle <span class="log-count"></span>
+      <button id="log-toggle" class="log-toggle" title="Minimize/expand the Chronicle" aria-expanded="true">▾</button>
+    </div>
     <div id="log-list"></div>
   </footer>
 </div>
 <div id="toast-root"></div>
 <div id="modal-root"></div>
-<script type="importmap">
-{ "imports": {
-    "three": "https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.module.js",
-    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.161.0/examples/jsm/"
-} }
-</script>
+<!-- Self-contained 3D gameboard bundle (THREE.js inlined — works offline/no CDN).
+     Note: NOT dotfile-named — Android drops dotfiles from packaged assets. -->
 <script src="js/data.js?v=20250637"></script>
 <script src="js/engine.js?v=20250637"></script>
-<script type="module" src="js/gameboard.js?v=20250679"></script>
+<script src="js/gameboard.bundle.js?v=20250679"></script>
 <script src="js/audio.js?v=20250640"></script>
 <script src="js/ui.js?v=20250654"></script>
 </body>

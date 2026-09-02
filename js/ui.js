@@ -11,6 +11,7 @@ const UI = {
 
   init(){
     this.bind();
+    this.setupLog();
     if (window.Board) this.setupBoard(); else this.buildMap();
     const hasSave = loadGame();
     // Title screen first on every launch (background: assets/titlescreen.jpg).
@@ -826,6 +827,55 @@ const UI = {
   },
 
   /* ---------- log bar ---------- */
+  /* Collapsible Chronicle: on phones it starts minimized to a thin toggle
+     strip so the game screen gets the space. Tap the toggle to expand/collapse.
+     It auto-expands when a HOT (notable) entry is logged so the player notices,
+     then they can re-minimize. */
+  setupLog(){
+    const logbar = document.getElementById("logbar");
+    const toggle = document.getElementById("log-toggle");
+    const minBtn = document.getElementById("log-min");
+    if (!logbar) return;
+    // Only auto-minimize on phone-sized screens; keep it open on desktop.
+    const isPhone = window.matchMedia && window.matchMedia("(max-width: 900px)").matches;
+    const saveToggle = () => { try { localStorage.setItem("fanohge_log", logbar.classList.contains("dismissed") ? "0" : "1"); } catch(e){ } };
+
+    const set = (collapsed) => {
+      logbar.classList.toggle("dismissed", collapsed);
+      logbar.classList.toggle("expanded", !collapsed);
+      if (toggle){
+        toggle.textContent = collapsed ? "▴" : "▾";
+        toggle.setAttribute("aria-expanded", collapsed ? "false" : "true");
+      }
+      // a manual collapse re-arms the auto-pop-on-hot so the next big event
+      // pops the Chronicle open again.
+      if (collapsed) this._logForcedOpenDismiss = false;
+      saveToggle();
+    };
+
+    // Collapse / expand via the header toggle button.
+    const onToggleClick = (e) => { e.stopPropagation(); set(!logbar.classList.contains("dismissed")); };
+    if (toggle) toggle.addEventListener("click", onToggleClick);
+
+    // The big, labeled "Minimize" button — always available when expanded so the
+    // player ALWAYS has an obvious way to collapse the feed again in portrait.
+    if (minBtn) minBtn.addEventListener("click", (e) => { e.stopPropagation(); set(true); });
+
+    // tapping the header row toggles too (finger-friendly)
+    const titleEl = logbar.querySelector("#log-title");
+    if (titleEl) titleEl.addEventListener("click", (e) => {
+      if (e.target === toggle || e.target === minBtn || minBtn && minBtn.contains(e.target)) return;
+      set(!logbar.classList.contains("dismissed"));
+    });
+
+    // Restore saved preference, else default to minimized on phones.
+    let saved = "1";
+    try { saved = localStorage.getItem("fanohge_log"); } catch(e){ }
+    if (isPhone && saved !== "1"){ set(true); }
+    else if (saved === "0"){ set(true); }
+    else { set(false); }
+  },
+
   renderLog(){
     const el = document.getElementById("log-list");
     const count = document.querySelector(".log-count");
@@ -835,6 +885,19 @@ const UI = {
       const eraInfo = ERA_BY_ID[h.era];
       return `<div class="log-line ${h.hot ? "hot" : ""}"><b>${h.year}</b> <span style="color:${eraInfo ? eraInfo.color : "var(--dim)"}">[${eraInfo ? eraInfo.short : ""}]</span> ${h.text}</div>`;
     }).join("");
+    // Auto-pop open when a notable (hot) event just landed, so the player sees it —
+    // but only if the player hasn't intentionally collapsed it in this same pass.
+    if (recent.length && recent[0].hot && !this._logForcedOpenDismiss){
+      const logbar = document.getElementById("logbar");
+      if (logbar && logbar.classList.contains("dismissed")){
+        // expand to show the new event
+        logbar.classList.remove("dismissed");
+        logbar.classList.add("expanded");
+        const t = document.getElementById("log-toggle");
+        if (t){ t.textContent = "▾"; t.setAttribute("aria-expanded","true"); }
+        this._logForcedOpenDismiss = true;   // re-collapse once after this burst
+      }
+    }
   },
 
   /* ---------- full refresh ---------- */

@@ -1,0 +1,84 @@
+==== federalization_2009 ====
+{ id:"federalization_2009", era:"commonwealth", year:2009, title:"The Federal Embrace",
+    text:"Washington passes the Consolidated Natural Resources Act, extending full U.S. immigration law and federal minimum wage to the Commonwealth. In a stroke, the islands' remaining garment industry — built on cheap immigrant labor — is doomed, and the long debate over who belongs in the Marianas is handed to the federal government.\n\nThe people of the CNMI become U.S. citizens, with all the rights and costs that brings. The islands' economy must now compete on American terms.",
+    choices:[
+      { label:"Support federalization", hint:"+approval, +rights · the American path is sealed",
+        text:"Citizenship is celebrated; the federal minimum wage arrives; the last garment factories close. The Marianas bet their future on the American connection.",
+        fx:{ approval:6, gold:-6, popIsland:{ saipan:-10 }, culture:-2, historyNote:"Federalization: CNMI residents become U.S. citizens; the garment era ends." } },
+      { label:"Fight for local control", hint:"+culture, −approval in Washington · the islands keep their say",
+        text:"The Commonwealth challenges the federal takeover, defending its own immigration and wage rules. Washington's law stands, but the islands win a reputation for independence of spirit.",
+        fx:{ culture:5, gold:-4, approval:-2, historyNote:"The Commonwealth resists federalization but U.S. law prevails." } }
+    ]},
+
+==== present_day_2024 ====
+{ id:"present_day_2024", era:"commonwealth", year:2024, title:"The Threshold",
+    text:"The year is 2024. The Commonwealth is nearly fifty years old. The garment factories are gone; tourism is recovering; the federal embrace is complete. Guam, 120 miles to the south, remains an American territory with its own dreams and its own debates about the future.\n\nThe historical arc — from latte stones to Spanish missions, German ledgers, Japanese sugar mills, American bases, and Commonwealth halls — is complete. Everything from here is unwritten.\n\nThe future of the Marianas is in your hands.",
+    choices:[
+      { label:"Step into the future", hint:"The player era begins · the story is yours to write",
+        text:"The conch sounds again, as it did a thousand years ago. Whatever comes next will be written by the people of these islands — and by you.",
+        fx:{ era:"future", historyNote:"The historical era ends; the future of the Marianas is now unwritten." } }
+    ]},
+
+==== future_start ====
+{ id:"future_start", era:"future", year:2025, title:"The Future Begins",
+    text:"The Marianas stand at a crossroads like none before. The questions are no longer about survival — they are about destiny.\n\nDo you build an open, democratic society, where every voice is heard and progress is slow but sure? Or do you build a strong, centralized state that delivers results at the price of freedom? Or do you keep the safe, familiar path — remaining a Commonwealth, postponing the great decisions?\n\nChoose the kind of leader you will be. The islands will remember.",
+    choices:[
+      { label:"The Democratic Path", hint:"Freedom, fairness, and the slow building of trust",
+        text:"Free press, strong labor rights, referenda, and the rule of law. Progress is patient — but the people walk with you.",
+        fx:{ govPath:"dem", govMeter:60, happiness:6, culture:4, reputation:3, historyNote:"The Marianas commit to the democratic path." } },
+      { label:"The Authoritarian Path", hint:"Discipline, speed, and control",
+        text:"A strong leader, a single vision, and no time for debate. The cranes rise faster — and the people learn to whisper.",
+        fx:{ govPath:"aut", govMeter:-60, gold:10, happiness:-4, historyNote:"The Marianas take the authoritarian path." } },
+      { label:"The Caretaker Path", hint:"Continue the Commonwealth · postpone the great choice",
+        text:"Keep the familiar arrangement, manage quietly, and let the future arrive on its own schedule. Safe — but the dream of nationhood waits.",
+        fx:{ govPath:"caretaker", govMeter:0, approval:3, historyNote:"The Marianas choose to continue as a Commonwealth for now." } }
+    ]},
+
+==== specialization_unlock ====
+{ id:"specialization_unlock", era:"future", year:2026, title:"The Strategy of Specialization",
+    text:"For the first time in the islands' history, the archipelago can be planned as one economy. The old colonial powers always treated each island as a raw material to be stripped. Now you can make each island a center of excellence — this one for tourism, that one for agriculture, another for technology or energy or the deep-sea trade.\n\nA nation of islands, each doing what it does best, bound together by ships, cables, and a common flag.",
+    onEnter:{ revealIndustry:true, historyNote:"Island industry specialization is unlocked." },
+    choices:[
+      { label:"Designate the first centers", hint:"Assign each island its role in the national economy",
+        text:"The planners sharpen their pencils. Saipan will welcome the world; Tinian will feed it; the northern isles will power it. The archipelago becomes more than the sum of its islands.",
+        fx:{ selfSufficiency:5, approval:3, historyNote:"The national specialization strategy begins." } }
+    ]},
+
+==== reunification_push ====
+{ id:"reunification_push", era:"future", year:2028, title:"The Dream of One Marianas",
+    text:"For 130 years, the Marianas have been divided — the Commonwealth in the north, the American territory of Guam in the south. Families separated by a line on a map. A people split between two flags.\n\nNow, a movement rises across both island groups: 'One Marianas.' The question of reunification — and of the islands' final status — moves to the center of public life.",
+    choices:[
+      { label:"Launch the reunification campaign", hint:"−gold · the dream becomes a national project",
+        text:"Funds flow to a joint campaign with Guam's own reunification advocates. Polls on Guam show growing interest in a shared future.",
+        fx:{ gold:-15, culture:8, approval:4, relationsGuam:6, historyNote:"The 'One Marianas' reunification movement gains momentum." } },
+      { label:"Move cautiously", hint:"Quiet diplomacy · the dream waits",
+        text:"The government pursues reunification quietly, through back channels and academic exchanges. Progress is slow — but the door stays open.",
+        fx:{ culture:3, relationsGuam:2, historyNote:"Reunification is pursued through quiet diplomacy." } }
+    ]},
+
+==== guam_referendum ====
+{ id:"guam_referendum", era:"future", year:2030, title:"Guam Decides",
+    text:"After years of debate, the people of Guam hold a historic vote on their own future. The options include remaining a U.S. territory, becoming a U.S. state, full independence — or reunification with the Northern Marianas as a new, independent nation.\n\nThe world watches. The counting begins.",
+    choices:[
+      { label:"Negotiate the union", hint:"Requires goodwill · Guam joins the new nation",
+        text:"The vote is close, but the Marianas' dream wins. Guam and the Commonwealth agree to form a single nation — to be written together, by all its people. The archipelago is whole again.",
+        fx:{ unlockIslands:["guam"], setAccessible:{ guam:true }, popIsland:{ guam:140 }, culture:12, approval:8, relationsGuam:10, flags:{"reunified":true},
+             historyNote:"GUAM VOTES TO REUNIFY. The Marianas archipelago is whole for the first time in 130 years." } },
+      { label:"Let Guam choose its own road", hint:"Reunification can wait · respect the vote",
+        text:"Guam's vote is inconclusive — independence and reunification fall just short. The dream remains alive, but the islands stay divided a while longer.",
+        fx:{ culture:4, approval:-2, relationsGuam:2, historyNote:"Guam's status vote is inconclusive; reunification waits." } }
+    ]},
+
+==== independence_declaration ====
+{ id:"independence_declaration", era:"future", year:2032, title:"The Declaration",
+    text:"The moment has come. The Marianas — north and south — prepare to declare themselves a sovereign nation: independent, self-governing, and answerable to no foreign capital.\n\nThe United States, after long negotiations, has agreed to respect the islands' choice. A constitutional convention has drafted the founding document. On the beach where the first guma' rose a thousand years ago, the flag of the Marianas is raised.",
+    choices:[
+      { label:"Declare independence", hint:"The ultimate goal · the islands take their place in the world",
+        text:"In a ceremony before the old latte stones, the Republic of the Marianas is proclaimed. Ships in the harbor sound their horns; the world's capitals send greetings. Every rock of the chain is claimed as home — a research post on Uråkas's lonely cone, a watch station on Fåddai's sliver. After a thousand years of empires, the islands belong to themselves.",
+        fx:{ unlockIslands:["fdp","fmedinilla"], popIsland:{ fdp:2, fmedinilla:1 }, flags:{"independent":true}, culture:15, approval:10, reputation:6, gold:-10,
+             historyNote:"THE MARIANAS DECLARE INDEPENDENCE. The archipelago becomes a sovereign nation." } },
+      { label:"Negotiate a longer transition", hint:"Safer, slower · the flag waits a few more years",
+        text:"The declaration is drafted but held — a longer transition, more guarantees, fewer risks. Independence is certain; only the date is not.",
+        fx:{ approval:3, reputation:2, historyNote:"Independence is negotiated with a longer transition." } }
+    ]},
+
