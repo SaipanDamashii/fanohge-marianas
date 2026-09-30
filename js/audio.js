@@ -283,7 +283,36 @@ if (typeof window !== "undefined"){
   const onHide = () => AudioMgr.pauseForBackground();
   document.addEventListener("visibilitychange", onVis);
   window.addEventListener("pagehide", onHide);
-  window.addEventListener("blur", onHide);
+  // NOTE: we deliberately do NOT pause on window "blur". Blur fires constantly
+  // during normal play (tapping a modal button, focusing the canvas, the era
+  // popup clearing, etc.) and has no matching "shown again" event — so music
+  // paused on blur would never resume. Only genuine page-hide/visibility
+  // changes should stop the score. This was why era music died as soon as the
+  // first era popup was dismissed.
+  // Safety net: whenever the game view regains focus, make sure the score is
+  // actually playing (resumes in place, or re-arms the current era/title).
+  window.addEventListener("focus", () => { try { AudioMgr.resumeForForeground(); } catch(e){} });
+  document.addEventListener("pointerdown", () => { try { AudioMgr.resumeForForeground(); } catch(e){} });
+
+  // Watchdog: some mobile WebViews silently pause/suspend audio without firing
+  // any event we can hook. Every few seconds, if the game is visible, sound is
+  // on, and a track is armed (title or era) but its element is paused, resume
+  // it in place. Cheap, runs only while the document is visible, and never
+  // restarts a playing track.
+  setInterval(() => {
+    try {
+      if (document.hidden) return;
+      if (!AudioMgr.enabled) return;
+      if (!AudioMgr._titleActive && !AudioMgr.eraId) return;
+      if (AudioMgr.ctx && AudioMgr.ctx.state === "suspended" && AudioMgr.ctx.resume) AudioMgr.ctx.resume();
+      if (AudioMgr.current && AudioMgr.current.paused){
+        AudioMgr.current.play().catch(()=>{});
+      } else if (!AudioMgr.current){
+        // Element lost entirely (e.g. recreated view) — re-arm the score.
+        AudioMgr.resumeForForeground();
+      }
+    } catch(e){ /* audio is optional */ }
+  }, 2500);
 }
 
 if (typeof window !== "undefined") window.AudioMgr = AudioMgr;
