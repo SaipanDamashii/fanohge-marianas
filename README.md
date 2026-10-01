@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="fanohgemarianastitlescreen.jpg" alt="Fanohge Marianas — title artwork featuring a latte stone above a tropical coastline at sunset" width="900">
+</p>
+
 # Fanohge Marianas
 
 ### A Saga of Civilization in the Pacific
